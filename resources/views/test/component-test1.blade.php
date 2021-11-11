@@ -1,0 +1,1 @@
+component-test1.blade.php
