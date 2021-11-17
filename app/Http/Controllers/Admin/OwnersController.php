@@ -27,6 +27,7 @@ class OwnersController extends Controller
      */
     public function index()
     {
+/*
         // データ型テスト
         $e_all = Owner::all(); //エロクアント
         $q_get = DB::table('owners')->select('name', 'created_at')->get(); // クエリビルダ get()
@@ -40,8 +41,11 @@ class OwnersController extends Controller
         echo $date_parse."<br>";
 
         // dd($e_all, $q_get, $q_first, $c_test);
+*/
 
-        return view('admin.owners.index', compact('e_all', 'q_get'));
+        $owners = Owner::select('name', 'email', 'created_at')->get();
+
+        return view('admin.owners.index', compact('owners'));
     }
 
     /**
