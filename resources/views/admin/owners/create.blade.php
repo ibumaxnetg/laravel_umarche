@@ -21,7 +21,6 @@
                       <x-auth-validation-errors class="mb-4" :errors="$errors" />
 
                       <form method="POST" action="{{ route('admin.owners.store') }}">
-                        @method(’put’)
                         @csrf
                         <div class="p-2 w-1/2 mx-auto">
                           <div class="relative">
