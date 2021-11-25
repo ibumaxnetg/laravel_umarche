@@ -7,12 +7,16 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
 
+use Illuminate\Support\Facades\Log;
+
 // データ型テスト用
 use App\Models\Owner; // エロクアント
+use App\Models\Shop; 
 use Illuminate\Support\Facades\DB; // QueryBuider
 
 // Carbon
 use Carbon\Carbon;
+use Throwable;
 
 class OwnersController extends Controller
 {
@@ -77,15 +81,36 @@ class OwnersController extends Controller
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
 
+        // 作成の成否確認と、失敗時の処理
+        try {
+            DB::transaction(function () use ($request) {
+                $owner = Owner::create([
+                    'name' => $request->name,
+                    'email' => $request->email,
+                    'password' => Hash::make($request->password),
+                ]);
+
+                Shop::create([
+                    'owner_id' => $owner->id,
+                    'name' => 'ここに名前をいれあます',
+                    'information' => '',
+                    'filename' => '',
+                    'is_selling' => true,
+                ]);
+            }, 2);
+        }
+        catch(Throwable $e) {
+            Log::error($e);
+            throw $e;
+        }
+
         // SQLに書き込む処理
-        Owner::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-        ]);
 
         return redirect()->route('admin.owners.index')
-        ->with('message', 'オーナー登録完了しました');
+        ->with([
+            'message', 'オーナー登録完了しました'],
+            'status', 'info',
+        );
     }
 
     /**
