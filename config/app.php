@@ -161,7 +161,7 @@ return [
         Illuminate\Translation\TranslationServiceProvider::class,
         Illuminate\Validation\ValidationServiceProvider::class,
         Illuminate\View\ViewServiceProvider::class,
-
+        
         /*
          * Package Service Providers...
          */
@@ -176,6 +176,9 @@ return [
         App\Providers\RouteServiceProvider::class,
 
         App\Providers\SampleServiceProvider::class,
+
+        Intervention\Image\ImageServiceProvider::class, // Intervention追加
+
     ],
 
     /*
@@ -231,6 +234,8 @@ return [
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
 
+        'InterventionImage' => Intervention\Image\Facades\Image::class, // Intervention追加
+        
     ],
 
 ];
