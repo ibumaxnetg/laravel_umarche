@@ -7,8 +7,11 @@ use Illuminate\Http\Request;
 
 use App\Models\Shop;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Storage;
-use InterventionImage;
+
+use App\Services\ImageService; // 下記２ファイルはImageService 内で読みます
+// use Illuminate\Support\Facades\Storage;
+// use InterventionImage; // 
+
 use App\Http\Requests\UploadImageRequest;
 
 class ShopController extends Controller
@@ -59,7 +62,11 @@ class ShopController extends Controller
 
             // Storage::putFile('public/shops', $imageFile); // リサイズなし
 
-            $fileName = uniqid(rand().'_'); // ユニークidを作成する
+            $fileNameToStore = ImageService::upload($imageFile, 'shops'); 
+
+            // 下記は[App\Services\ImageService ]に移しました
+            /* ここから
+             $fileName = uniqid(rand().'_'); // ユニークidを作成する
             $extension = $imageFile->extension(); // 拡張子を設定
             $fileNameToStore = $fileName. '.' . $extension;
 
@@ -70,6 +77,7 @@ class ShopController extends Controller
             // dd($imageFile, $resizedImage);
 
             Storage::put('public/shops/' . $fileNameToStore, $resizedImage );
+            ここまで */
         }
 
         return redirect()->route('owner.shops.index');
