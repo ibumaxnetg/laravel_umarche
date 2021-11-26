@@ -4,6 +4,8 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
+use function Ramsey\Uuid\v1;
+
 class UploadImageRequest extends FormRequest
 {
     /**
@@ -24,7 +26,8 @@ class UploadImageRequest extends FormRequest
     public function rules()
     {
         return [
-            'image'=>'image|mimes:jpg,jpeg,png|max:2048',
+            'image' => 'image|mimes:jpg,jpeg,png|max:2048',
+            'files.*.image' => 'required|image|mimes:jpg,jpeg,png|max:2048',
         ];
     }
 

@@ -29,7 +29,7 @@
                     </a>
                 </div>
                 @endforeach
-                {{ $images->links() }}
+                {{-- $shops->links() --}}
                 <p><a href="/component-test1">てすと１</a></p>
                 <p><a href="/component-test2">てすと2</a></p>
               </div>
