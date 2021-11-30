@@ -15,6 +15,7 @@
 
                   <form method="POST" action="{{ route('owner.shops.update', ['shop' => $shop->id ]) }}" enctype="multipart/form-data">
                     @csrf
+                    <div class="-m-2">
                     <div class="p-2 w-1/2 mx-auto">
                         <div class="relative">
                           <label for="name" class="leading-7 text-sm text-gray-600">店名 ※必須</label>
@@ -54,6 +55,7 @@
                         <button type="button" onclick="location.href='{{ route('owner.shops.index') }}'" class="bg-gray-200 border-0 py-2 px-8 focus:outline-none hover:bg-gray-400 rounded text-lg">もどる</button>
                         <button type="submit" class="text-white bg-indigo-500 border-0 py-2 px-8 focus:outline-none hover:bg-indigo-600 rounded text-lg">登録する</button>
                       </div>
+                    </div>
                     </div>
                 </form>
               <p><a href="/component-test1">てすと１</a></p>
