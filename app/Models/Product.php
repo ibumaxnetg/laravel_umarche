@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 use App\Models\Shop;
 use App\Models\SecondaryCategory;
 use App\Models\Image;
+use App\Models\Stock;
 
 
 class Product extends Model
@@ -31,4 +32,10 @@ class Product extends Model
       // 第２引数に テーブルカラム名、第３引数に イメージモデルの'id'と紐付ける
       return $this->belongsTo(Image::class, 'image1', 'id');
     }
+
+    public function stock()
+    {
+      return $this->hasMany(Stock::class); 
+    }    
+
 }
