@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
 use App\Models\Image;
+use App\Models\Product;
 use Illuminate\Support\Facades\Auth;
 
 use App\Http\Requests\UploadImageRequest;
@@ -24,15 +25,15 @@ class ImageController extends Controller
             $id = $request->route()->parameter('image'); //shopのid取得
             if(!is_null($id)){ // null判定
                 $imagesOwnerId = Image::findOrFail($id)->owner->id;
-                $imageId = (int)$imagesOwnerId; // キャスト 文字列→数値に型変換 
+                $imageId = (int)$imagesOwnerId; // キャスト 文字列→数値に型変換
 
                 if($imageId !== Auth::id()){ // 同じでなかったら
-                    abort(404); // 404画面表示 
+                    abort(404); // 404画面表示
                 }
             }
             return $next($request);
         });
-             
+
     }
 
     /**
@@ -43,7 +44,7 @@ class ImageController extends Controller
     public function index()
     {
         //
-        $images = Image::where('owner_id', Auth::id()) 
+        $images = Image::where('owner_id', Auth::id())
                     ->orderBy('updated_at', 'desc')
                     ->paginate(10);
 
@@ -71,14 +72,14 @@ class ImageController extends Controller
     {
         //
         // dd($request);
-        $imageFiles = $request->file('files'); //配列でファイルを取得 
+        $imageFiles = $request->file('files'); //配列でファイルを取得
         if(!is_null($imageFiles)){
-            foreach($imageFiles as $imageFile){ // それぞれ処理 
+            foreach($imageFiles as $imageFile){ // それぞれ処理
                 $fileNameToStore = ImageService::upload($imageFile, 'products');
                 Image::create([
-                    'owner_id' => Auth::id(), 
+                    'owner_id' => Auth::id(),
                     'filename' => $fileNameToStore,
-                ]); 
+                ]);
             }
         }
 
@@ -129,7 +130,7 @@ class ImageController extends Controller
         $request->validate([
             'title' => ['string', 'max:50'],
         ]);
-        
+
         // DB書き込み処理
         $image = Image::findOrFail($id);
 
@@ -156,6 +157,35 @@ class ImageController extends Controller
     {
         // 画像のファイル名とパス
         $image = Image::findOrFail($id);
+
+        // プロダクトの中に image が入っているか 入っていたら ->get() で取得して $imageInProducts にいれる
+        $imageInProducts = Product::where('image1', $image->id)
+                            ->orWhere('image2', $image->id)
+                            ->orWhere('image3', $image->id)
+                            ->orWhere('image4', $image->id)
+                            ->get();
+
+        if($imageInProducts){
+            $imageInProducts->each(function($product) use($image){
+                if($product->image1 === $image->id){
+                    $product->image1 = null;
+                    $product->save();
+                }
+                if($product->image2 === $image->id){
+                    $product->image2 = null;
+                    $product->save();
+                }
+                if($product->image3 === $image->id){
+                    $product->image3 = null;
+                    $product->save();
+                }
+                if($product->image4 === $image->id){
+                    $product->image4 = null;
+                    $product->save();
+                }
+            });
+        }
+
         $filePath = 'public/products/'.$image->filename;
 
         if (Storage::exists($filePath)) { // 画像があるか判定

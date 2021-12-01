@@ -270,7 +270,7 @@ class ProductController extends Controller
      */
     public function destroy($id)
     {
-        // 画像を削除
+        // 商品を削除
         Product::findOrFail($id)->delete();
 
         return redirect()
