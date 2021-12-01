@@ -25,9 +25,9 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('owner.welcome');
-});
+// Route::get('/', function () {
+//     return view('owner.welcome');
+// });
 
 Route::prefix('shops')
 ->middleware('auth:owners')
@@ -37,11 +37,11 @@ Route::prefix('shops')
     Route::post('update/{shop}', [ShopController::class, 'update'])->name('shops.update');
 });
 
-Route::resource('images', ImageController::class) 
+Route::resource('images', ImageController::class)
 ->middleware('auth:owners')
 ->except('show');
 
-Route::resource('products', ProductController::class) 
+Route::resource('products', ProductController::class)
 ->middleware('auth:owners')
 ->except('show');
 
@@ -51,12 +51,12 @@ Route::get('/dashboard', function () {
 })->middleware(['auth:owners'])->name('dashboard');
 
 
-Route::get('/register', [RegisteredUserController::class, 'create'])
-                ->middleware('guest')
-                ->name('register');
+// Route::get('/register', [RegisteredUserController::class, 'create'])
+//                 ->middleware('guest')
+//                 ->name('register');
 
-Route::post('/register', [RegisteredUserController::class, 'store'])
-                ->middleware('guest');
+// Route::post('/register', [RegisteredUserController::class, 'store'])
+//                 ->middleware('guest');
 
 Route::get('/login', [AuthenticatedSessionController::class, 'create'])
                 ->middleware('guest')
