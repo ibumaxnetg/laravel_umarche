@@ -111,7 +111,7 @@
                     <div class="p-2 w-1/2 mx-auto">
                       <div class="relative flex justify-around">
                         <label><input type="radio" name="is_selling" value="1" checked class="mr-2" @if ($product->is_selling === 1) { checked } @endif />販売中</label>
-                        <label><input type="radio" name="is_selling" value="0" class="mr-2" @if ($product->is_selling === 1) { checked } @endif />販売停止中</label>
+                        <label><input type="radio" name="is_selling" value="0" class="mr-2" @if ($product->is_selling === 2) { checked } @endif />販売停止中</label>
                       </div>
                     </div>
 
@@ -121,7 +121,16 @@
                     </div>
                     </div>
                   </form>
-              <p><a href="/component-test1">てすと１</a></p>
+
+                  <form id="delete_{{ $product->id }}" method="POST" action="{{ route('owner.products.destroy', ['product' => $product->id ]) }}">
+                    @method('delete')
+                    @csrf
+                    <div class="p-2 w-full flex justify-around mt-16">
+                      <a href="#" data-id="{{ $product->id }}" onclick="deletePost(this)" class="text-white bg-red-500 border-0 py-2 px-8 focus:outline-none hover:bg-red-400 rounded text-lg">削除</a>
+                    </div>
+                  </form>
+
+                  <p><a href="/component-test1">てすと１</a></p>
                   <p><a href="/component-test2">てすと2</a></p>
               </div>
           </div>
@@ -144,5 +153,12 @@ images.forEach(image => { // 1つずつ繰り返す
         MicroModal.close(modal); //モーダルを閉じる
     })
 })
+
+function deletePost(e) {
+  'use strict';
+  if (confirm('本当に削除してもいいですか?')) { document.getElementById('delete_' + e.dataset.id).submit(); }
+}
+
 </script>
+
 </x-app-layout>
