@@ -59,8 +59,8 @@
 
                         <div class="p-2 w-1/2 mx-auto">
                           <div class="relative flex justify-around">
-                            <label><input type="radio" name="type" value="1" checked class="mr-2" />追加</label>
-                            <label><input type="radio" name="type" value="2" class="mr-2" />削除</label>
+                            <label><input type="radio" name="type" value="{{ \Constant::PRODUCT_LIST['add'] }}" checked class="mr-2" />追加</label>
+                            <label><input type="radio" name="type" value="{{ \Constant::PRODUCT_LIST['reduce'] }}" class="mr-2" />削除</label>
                           </div>
                         </div>
 

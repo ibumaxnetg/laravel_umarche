@@ -161,7 +161,7 @@ return [
         Illuminate\Translation\TranslationServiceProvider::class,
         Illuminate\Validation\ValidationServiceProvider::class,
         Illuminate\View\ViewServiceProvider::class,
-        
+
         /*
          * Package Service Providers...
          */
@@ -235,7 +235,8 @@ return [
         'View' => Illuminate\Support\Facades\View::class,
 
         'InterventionImage' => Intervention\Image\Facades\Image::class, // Intervention追加
-        
+        'Constant' => App\Constants\Common::class, // 定数を設定
+
     ],
 
 ];

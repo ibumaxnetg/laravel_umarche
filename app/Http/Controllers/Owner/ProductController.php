@@ -234,10 +234,10 @@ class ProductController extends Controller
 
                     $product->save();
 
-                if ($request->type === '1') {
+                if ($request->type === \Constant::PRODUCT_LIST['add']) {
                     $newQuantity = $request->quantity;
                 }
-                if ($request->type === '2') { // 削除はマイナスに
+                if ($request->type === \Constant::PRODUCT_LIST['reduce']) { // 削除はマイナスに
                     $newQuantity = $request->quantity * -1;
                     // dd($newQuantity);
                 }
