@@ -47,6 +47,24 @@ class Product extends Model
       return $this->belongsTo(Image::class, 'image1', 'id');
     }
 
+    public function imageSecond()  
+    {
+      // 第２引数に テーブルカラム名、第３引数に イメージモデルの'id'と紐付ける
+      return $this->belongsTo(Image::class, 'image2', 'id');
+    }
+
+    public function imageThird()  
+    {
+      // 第２引数に テーブルカラム名、第３引数に イメージモデルの'id'と紐付ける
+      return $this->belongsTo(Image::class, 'image3', 'id');
+    }
+
+    public function imageFourth()  
+    {
+      // 第２引数に テーブルカラム名、第３引数に イメージモデルの'id'と紐付ける
+      return $this->belongsTo(Image::class, 'image4', 'id');
+    }
+
     public function stock()
     {
       return $this->hasMany(Stock::class); 
