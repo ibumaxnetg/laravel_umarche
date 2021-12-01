@@ -13,6 +13,7 @@ use App\Models\PrimaryCategory;
 use App\Models\Product;
 use App\Models\Shop;
 use App\Models\Stock;
+use App\Http\Requests\ProductRequest;
 
 
 
@@ -28,15 +29,15 @@ class ProductController extends Controller
             $id = $request->route()->parameter('product'); //shopのid取得
             if(!is_null($id)){ // null判定
                 $productsOwnerId = Product::findOrFail($id)->shop->owner->id;
-                $productsId = (int)$productsOwnerId; // キャスト 文字列→数値に型変換 
+                $productsId = (int)$productsOwnerId; // キャスト 文字列→数値に型変換
 
                 if($productsId !== Auth::id()){ // 同じでなかったら
-                    abort(404); // 404画面表示 
+                    abort(404); // 404画面表示
                 }
             }
             return $next($request);
         });
-             
+
     }
 
     /**
@@ -50,13 +51,13 @@ class ProductController extends Controller
         // $products = Owner::findOrFail(Auth::id())->shop->product;
 
         // Eager(積極的) Loading で書き直します
-        $ownerInfo = Owner::with('shop.product.imageFirst') 
+        $ownerInfo = Owner::with('shop.product.imageFirst')
             ->where('id', Auth::id())->get();
         // dd($ownerInfo);
 
-        // foreach($ownerInfo as $owner) 
+        // foreach($ownerInfo as $owner)
         //     foreach($owner->shop->product as $product) {
-        //         dd($product->imageFirst->filename); 
+        //         dd($product->imageFirst->filename);
         //     }
         // }
 
@@ -81,7 +82,7 @@ class ProductController extends Controller
         $categories = PrimaryCategory::with('secondary')
                     ->get();
 
-        return view('owner.products.create', compact('shops', 'images', 'categories'));    
+        return view('owner.products.create', compact('shops', 'images', 'categories'));
     }
 
     /**
@@ -90,7 +91,7 @@ class ProductController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(ProductRequest $request)
     {
         // dd($request);
 
@@ -109,7 +110,7 @@ class ProductController extends Controller
             'image4' => ['nullable', 'exists:images,id'],
             'is_selling' => ['required'],
         ]);
-        
+
 
         // 作成の成否確認と、失敗時の処理
         try {
@@ -144,9 +145,9 @@ class ProductController extends Controller
 
         return redirect()->route('owner.products.index')
         ->with([
-            'message', '商品登録完了しました'],
-            'status', 'info',
-        );
+            'message' => '商品登録完了しました',
+            'status' => 'info',
+        ]);
     }
 
     /**
@@ -170,6 +171,7 @@ class ProductController extends Controller
     {
         //
         $product = Product::findOrFail($id);
+        // 在庫数(quantity)の合計を $quantity に入れる
         $quantity = Stock::where('product_id', $product->id)
                             ->sum('quantity');
 
@@ -183,8 +185,8 @@ class ProductController extends Controller
         $categories = PrimaryCategory::with('secondary')
                     ->get();
 
-        return view('owner.products.edit', compact('product', 'quantity', 'shops', 'images', 'categories'));    
-        
+        return view('owner.products.edit', compact('product', 'quantity', 'shops', 'images', 'categories'));
+
     }
 
     /**
@@ -194,9 +196,70 @@ class ProductController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(ProductRequest $request, $id)
     {
         //
+        $request->validate([
+            'current_quantity' => ['required', 'integer'],
+        ]);
+
+        $product = Product::findOrFail($id);
+        $quantity = Stock::where('product_id', $product->id)
+        ->sum('quantity');
+
+        // dd($request->current_quantity, $quantity);
+        if ($request->current_quantity !== $quantity) { // 渡された在庫数とDBの在庫が変わっていなければ
+            $id = $request->route()->parameter('product'); //shopのid取得
+            return redirect()->route('owner.products.edit', ['product' => $id])
+            ->with([
+                'message' => '在庫数が変更されています。再度確認してください。',
+                'status' => 'alert',
+            ]);
+        } else {
+
+            // 作成の成否確認と、失敗時の処理
+            try {
+                DB::transaction(function () use ($request, $product) {
+                    $product->name = $request->name;
+                    $product->information = $request->information;
+                    $product->price = $request->price;
+                    $product->sort_order = $request->sort_order;
+                    $product->shop_id = $request->shop_id;
+                    $product->secondary_category_id = $request->category;
+                    $product->image1 = $request->image1;
+                    $product->image2 = $request->image2;
+                    $product->image3 = $request->image3;
+                    $product->image4 = $request->image4;
+                    $product->is_selling = $request->is_selling;
+
+                    $product->save();
+
+                if ($request->type === '1') {
+                    $newQuantity = $request->quantity;
+                }
+                if ($request->type === '2') { // 削除はマイナスに
+                    $newQuantity = $request->quantity * -1;
+                    // dd($newQuantity);
+                }
+
+                Stock::create([
+                    'product_id' => $product->id,
+                    'type' => $request->type,
+                    'quantity' => $newQuantity,
+                ]);
+                }, 2);
+            }
+            catch(Throwable $e) {
+                Log::error($e);
+                throw $e;
+            }
+
+            return redirect()->route('owner.products.index')
+            ->with([
+                'message' => '商品情報更新完了しました',
+                'status' => 'info',
+            ]);
+        }
     }
 
     /**

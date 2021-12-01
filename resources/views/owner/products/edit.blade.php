@@ -13,8 +13,12 @@
                 <!-- Validation Errors -->
                 <x-auth-validation-errors class="mb-4" :errors="$errors" />
 
+                <!-- flash-message -->
+                <x-flash-message status="session('status')" />
+
                   <form method="POST" action="{{ route('owner.products.update', ['product' => $product->id ] ) }}">
                     @csrf
+                    @method('put')
 
                     <div class="-m-2">
                       <div class="p-2 w-1/2 mx-auto">
@@ -23,21 +27,21 @@
                             <input type="text" id="name" name="name" required value="{{ $product->name }}" class="w-full bg-gray-100 bg-opacity-50 rounded border border-gray-300 focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out">
                           </div>
                         </div>
-  
+
                         <div class="p-2 w-1/2 mx-auto">
                           <div class="relative">
                             <label for="information" class="leading-7 text-sm text-gray-600">商品情報</label>
                             <textarea id="information" name="information" rows="10" required class="w-full bg-gray-100 bg-opacity-50 rounded border border-gray-300 focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out">{{ $product->information }}</textarea>
                           </div>
                         </div>
-  
+
                         <div class="p-2 w-1/2 mx-auto">
                           <div class="relative">
                             <label for="price" class="leading-7 text-sm text-gray-600">価格</label>
                             <input type="text" id="price" name="price" required value="{{ $product->price }}" class="w-full bg-gray-100 bg-opacity-50 rounded border border-gray-300 focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out">
                           </div>
                         </div>
- 
+
                         <div class="p-2 w-1/2 mx-auto">
                           <div class="relative">
                             <label for="sort_order" class="leading-7 text-sm text-gray-600">表示順</label>
@@ -56,9 +60,9 @@
                         <div class="p-2 w-1/2 mx-auto">
                           <div class="relative flex justify-around">
                             <label><input type="radio" name="type" value="1" checked class="mr-2" />追加</label>
-                            <label><input type="radio" name="type" value="0" class="mr-2" />削除</label>
+                            <label><input type="radio" name="type" value="2" class="mr-2" />削除</label>
                           </div>
-                        </div>  
+                        </div>
 
                         <div class="p-2 w-1/2 mx-auto">
                           <div class="relative">
@@ -75,13 +79,13 @@
                             @foreach ($shops as $shop)
                               <option value="{{ $shop->id }}" @if($shop->id === $product->shop_id) selected @endif >
                                   {{ $shop->name }}
-                              </option> 
+                              </option>
                             @endforeach
                             </select>
                           </div>
                         </div>
 
-                              
+
                         <div class="p-2 w-1/2 mx-auto">
                       <div class="relative">
                         <label for="category" class="leading-7 text-sm text-gray-600">カテゴリ</label>
@@ -91,14 +95,14 @@
                               @foreach($category->secondary as $secondary)
                                 <option value="{{ $secondary->id}}" @if($secondary->id === $product->secondary_category_id) selected @endif >
                                     {{ $secondary->name }}
-                                </option> 
+                                </option>
                               @endforeach
                           @endforeach
                           </select>
                       </div>
                     </div>
 
-                    <x-select-image :images="$images" name="image1" currentId="{{ $product->image1 }}" currentImage="{{ $product->imageFirst->filename ?? '' }}" name="image1" /> />
+                    <x-select-image :images="$images" name="image1" currentId="{{ $product->image1 }}" currentImage="{{ $product->imageFirst->filename ?? '' }}" />
                     <x-select-image :images="$images" name="image2" currentId="{{ $product->image2 }}" currentImage="{{ $product->imageSecond->filename ?? '' }}" />
                     <x-select-image :images="$images" name="image3" currentId="{{ $product->image3 }}" currentImage="{{ $product->imageThird->filename ?? '' }}" />
                     <x-select-image :images="$images" name="image4" currentId="{{ $product->image4 }}" currentImage="{{ $product->imageFourth->filename ?? '' }}" />
@@ -109,7 +113,7 @@
                         <label><input type="radio" name="is_selling" value="1" checked class="mr-2" @if ($product->is_selling === 1) { checked } @endif />販売中</label>
                         <label><input type="radio" name="is_selling" value="0" class="mr-2" @if ($product->is_selling === 1) { checked } @endif />販売停止中</label>
                       </div>
-                    </div>  
+                    </div>
 
                     <div class="p-2 w-full flex justify-around mt-4">
                       <button type="button" onclick="location.href='{{ route('owner.products.index') }}'" class="bg-gray-200 border-0 py-2 px-8 focus:outline-none hover:bg-gray-400 rounded text-lg">もどる</button>
@@ -125,11 +129,11 @@
   </div>
 <script>
 'use strict';
-const images = document.querySelectorAll('.image'); //全てのimageタグを取得 
+const images = document.querySelectorAll('.image'); //全てのimageタグを取得
 images.forEach(image => { // 1つずつ繰り返す
     image.addEventListener('click', function(e){ // クリックしたら
         const imageName = e.target.dataset.id.substr(0, 6); //data-idの6文字
-        const imageId = e.target.dataset.id.replace(imageName + '_', ''); // 6文字カット 
+        const imageId = e.target.dataset.id.replace(imageName + '_', ''); // 6文字カット
         const imageFile = e.target.dataset.file;
         const imagePath = e.target.dataset.path;
         const modal = e.target.dataset.modal;
@@ -138,7 +142,7 @@ images.forEach(image => { // 1つずつ繰り返す
         document.getElementById(imageName + '_thumbnail').src = imagePath + '/' + imageFile;
         document.getElementById(imageName + '_hidden').value = imageId;
         MicroModal.close(modal); //モーダルを閉じる
-    }) 
+    })
 })
 </script>
 </x-app-layout>

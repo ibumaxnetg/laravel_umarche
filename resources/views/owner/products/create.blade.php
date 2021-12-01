@@ -23,21 +23,21 @@
                             <input type="text" id="name" name="name" required value="{{ old('name') }}" class="w-full bg-gray-100 bg-opacity-50 rounded border border-gray-300 focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out">
                           </div>
                         </div>
-  
+
                         <div class="p-2 w-1/2 mx-auto">
                           <div class="relative">
                             <label for="information" class="leading-7 text-sm text-gray-600">商品情報</label>
                             <textarea id="information" name="information" rows="10" required class="w-full bg-gray-100 bg-opacity-50 rounded border border-gray-300 focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out">{{ old('information') }}</textarea>
                           </div>
                         </div>
-  
+
                         <div class="p-2 w-1/2 mx-auto">
                           <div class="relative">
                             <label for="price" class="leading-7 text-sm text-gray-600">価格</label>
                             <input type="text" id="price" name="price" required value="{{ old('price') }}" class="w-full bg-gray-100 bg-opacity-50 rounded border border-gray-300 focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out">
                           </div>
                         </div>
- 
+
                         <div class="p-2 w-1/2 mx-auto">
                           <div class="relative">
                             <label for="sort_order" class="leading-7 text-sm text-gray-600">表示順</label>
@@ -50,6 +50,7 @@
                             <label for="quantity" class="leading-7 text-sm text-gray-600">在庫 ※必須</label>
                             <input type="number" id="quantity" name="quantity" required value="{{ old('quantity') }}" class="w-full bg-gray-100 bg-opacity-50 rounded border border-gray-300 focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out">
                           </div>
+                          <span class="text-sm">0〜99の範囲で入力してください</span>
                         </div>
 
                         <div class="p-2 w-1/2 mx-auto">
@@ -59,13 +60,13 @@
                             @foreach ($shops as $shop)
                               <option value="{{ $shop->id}}" >
                                   {{ $shop->name }}
-                              </option> 
+                              </option>
                             @endforeach
                             </select>
                           </div>
                         </div>
 
-                              
+
                         <div class="p-2 w-1/2 mx-auto">
                       <div class="relative">
                         <label for="category" class="leading-7 text-sm text-gray-600">カテゴリ</label>
@@ -75,7 +76,7 @@
                               @foreach($category->secondary as $secondary)
                                 <option value="{{ $secondary->id}}" >
                                     {{ $secondary->name }}
-                                </option> 
+                                </option>
                               @endforeach
                           @endforeach
                           </select>
@@ -93,7 +94,7 @@
                           <label><input type="radio" name="is_selling" value="1" checked class="mr-2" />販売中</label>
                           <label><input type="radio" name="is_selling" value="0" class="mr-2" />販売停止中</label>
                        </div>
-                  </div>  
+                  </div>
 
                     <div class="p-2 w-full flex justify-around mt-4">
                       <button type="button" onclick="location.href='{{ route('owner.products.index') }}'" class="bg-gray-200 border-0 py-2 px-8 focus:outline-none hover:bg-gray-400 rounded text-lg">もどる</button>
@@ -109,11 +110,11 @@
   </div>
 <script>
 'use strict';
-const images = document.querySelectorAll('.image'); //全てのimageタグを取得 
+const images = document.querySelectorAll('.image'); //全てのimageタグを取得
 images.forEach(image => { // 1つずつ繰り返す
     image.addEventListener('click', function(e){ // クリックしたら
         const imageName = e.target.dataset.id.substr(0, 6); //data-idの6文字
-        const imageId = e.target.dataset.id.replace(imageName + '_', ''); // 6文字カット 
+        const imageId = e.target.dataset.id.replace(imageName + '_', ''); // 6文字カット
         const imageFile = e.target.dataset.file;
         const imagePath = e.target.dataset.path;
         const modal = e.target.dataset.modal;
@@ -122,7 +123,7 @@ images.forEach(image => { // 1つずつ繰り返す
         document.getElementById(imageName + '_thumbnail').src = imagePath + '/' + imageFile;
         document.getElementById(imageName + '_hidden').value = imageId;
         MicroModal.close(modal); //モーダルを閉じる
-    }) 
+    })
 })
 </script>
 </x-app-layout>
