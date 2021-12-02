@@ -13,7 +13,7 @@
                 <div class="flex flex-wrap">
                       @foreach($products as $product)
                           <div class="w-1/4 p-2 md:p-4">
-                              {{-- <a href="{{ route('owner.products.edit', ['product' => $product->id]) }}"> --}}
+                              <a href="{{ route('user.items.show', ['item' => $product->id]) }}">
                                   <div class="border rounded-md p-2 md:p4">
                                       <div class="mb-4">
                                           <div>
@@ -26,7 +26,7 @@
                                             </div>
                                       </div>
                                   </div>
-                              {{-- </a> --}}
+                              </a>
                           </div>
                     @endforeach
                 </div>
