@@ -92,7 +92,7 @@ class CartController extends Controller
             ]);
         }
 
-        dd($products);
+        // dd($products);
 
         \Stripe\Stripe::setApiKey(env('STRIPE_SECRET_KEY'));
 
