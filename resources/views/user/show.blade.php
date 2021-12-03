@@ -64,7 +64,7 @@
                   </div>
                   <div class="md:w-1/2 ml-4">
                     <h2 class="mb-4 text-sm title-font text-gray-500 tracking-widest">{{ $product->category->name}}</h2>
-                    <h1 class="mb-4 text-gray-900 text-3xl title-font font-medium mb-1">{{ $product->name}}</h1>
+                    <h1 class="mb-4 text-gray-900 text-3xl title-font font-medium">{{ $product->name}}</h1>
                     <p class="mb-4 leading-relaxed">{{ $product->information }}</p>
                   <div class="flex justify-around items-center">
                     <span class="title-font font-medium text-2xl text-gray-900">{{ number_format($product->price) }}<span class="text-gray-700 text-sm">円（税込）</span></span>
