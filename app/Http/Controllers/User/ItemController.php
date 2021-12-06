@@ -15,6 +15,18 @@ class ItemController extends Controller
     public function __construct()
     {
         $this->middleware('auth:users');
+
+        // ミドルウェアの設定
+        $this->middleware(function($request, $next){
+            $id = $request->route()->parameter('item'); //shopのid取得
+            if(!is_null($id)){ // null判定
+                $itemId = Product::AvailableItems()->where('product_id', $id)->exists(); // 受け取った id が存在するか、あれば true
+                if(!$itemId){ // $itemId が false なら
+                    abort(404); // 404画面表示
+                }
+            }
+            return $next($request);
+        });
     }
 
         //
