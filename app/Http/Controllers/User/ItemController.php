@@ -34,7 +34,7 @@ class ItemController extends Controller
     {
         $products = Product::AvailableItems()
             ->sortOrder($request->sort)
-            ->paginate($request->pageination);
+            ->paginate($request->pageination ?? '20');
 
         /* Models/Product.php に作ったローカルスコープで作動させる
         $stocks = DB::table('t_stocks')
