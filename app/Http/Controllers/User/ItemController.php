@@ -30,9 +30,11 @@ class ItemController extends Controller
     }
 
         //
-    public function index()
+    public function index(Request $request)
     {
-        $products = Product::AvailableItems()->get();
+        $products = Product::AvailableItems()
+            ->sortOrder($request->sort)
+            ->get();
 
         /* Models/Product.php に作ったローカルスコープで作動させる
         $stocks = DB::table('t_stocks')
