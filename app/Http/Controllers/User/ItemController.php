@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Models\Product;
 use App\Models\Stock;
+use App\Models\PrimaryCategory;
 
 class ItemController extends Controller
 {
@@ -32,9 +33,14 @@ class ItemController extends Controller
         //
     public function index(Request $request)
     {
+        // dd($request);
+        $categories = PrimaryCategory::with('secondary')
+                        ->get();
+
         $products = Product::AvailableItems()
-            ->sortOrder($request->sort)
-            ->paginate($request->pageination ?? '20');
+                    ->selectCategory($request->category ?? '0')
+                    ->sortOrder($request->sort)
+                    ->paginate($request->pageination ?? '20');
 
         /* Models/Product.php に作ったローカルスコープで作動させる
         $stocks = DB::table('t_stocks')
@@ -62,7 +68,7 @@ class ItemController extends Controller
         // dd($stocks, $products);
         // $products = Product::all();
 
-        return view('user.index', compact('products'));
+        return view('user.index', compact('products', 'categories'));
     }
 
     public function show($id){
