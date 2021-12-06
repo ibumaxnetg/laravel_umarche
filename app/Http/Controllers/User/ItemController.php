@@ -37,10 +37,11 @@ class ItemController extends Controller
         $categories = PrimaryCategory::with('secondary')
                         ->get();
 
-        $products = Product::AvailableItems()
-                    ->selectCategory($request->category ?? '0')
-                    ->sortOrder($request->sort)
-                    ->paginate($request->pageination ?? '20');
+                        $products = Product::AvailableItems()
+                        ->selectCategory($request->category ?? '0')
+                        ->searchKeyword($request->keyword)
+                        ->sortOrder($request->sort)
+                        ->paginate($request->pageination ?? '20');
 
         /* Models/Product.php に作ったローカルスコープで作動させる
         $stocks = DB::table('t_stocks')
