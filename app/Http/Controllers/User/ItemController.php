@@ -6,9 +6,11 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 use App\Models\Product;
 use App\Models\Stock;
 use App\Models\PrimaryCategory;
+use App\Mail\TestMail;
 
 class ItemController extends Controller
 {
@@ -68,6 +70,10 @@ class ItemController extends Controller
 
         // dd($stocks, $products);
         // $products = Product::all();
+
+        Mail::to('test@example.com') //受信者の指定
+            ->send(new TestMail()); //Mailableクラス
+
 
         return view('user.index', compact('products', 'categories'));
     }
