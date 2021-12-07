@@ -7,7 +7,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 
-class ThanksMail extends Mailable
+class OrderedMail extends Mailable
 {
     use Queueable, SerializesModels;
 
@@ -17,13 +17,13 @@ class ThanksMail extends Mailable
      * @return void
      */
 
-    public $products;
+    public $product;
     public $user;
 
-    public function __construct($products, $user)
+    public function __construct($product, $user)
     {
         //
-        $this->products = $products;
+        $this->product = $product;
         $this->user = $user;
     }
 
@@ -35,7 +35,7 @@ class ThanksMail extends Mailable
     public function build()
     {
         return $this
-        ->subject('ご購入ありがとうございます')
-        ->view('mail.thunks'); //本文
+            ->subject('商品が注文されました')
+            ->view('mail.ordered');
     }
 }
