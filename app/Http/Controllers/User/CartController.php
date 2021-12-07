@@ -9,6 +9,9 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\Cart;
 use App\Models\User;
 use App\Models\Stock;
+use App\Services\CartService;
+use App\Jobs\SendThanksMail;
+use App\Jobs\SendOrderedMail;
 
 class CartController extends Controller
 {
@@ -92,8 +95,11 @@ class CartController extends Controller
             ]);
         }
 
-        // dd($products);
+        // dd(env('STRIPE_PUBLIC_KEY'));
+        $pubKey = "pk_test_51K2YbGIjpSc3PxNzTdswOuNtdkXRVikU81fz0tAtMTSozcSCzayX2qjiFYPihmC4aLYvtR9ipKSbSd6JdOGYUsK500iFpAJSuV";
+        $secKey = "sk_test_51K2YbGIjpSc3PxNzG6n1Ad0RWw2M6F8KutC0rvhTR2UzqGg34qSpyTnR36m6qEbxkeSPUpyea66wuu5Wivf6qKgw006XgsfYGL";
 
+        // \Stripe\Stripe::setApiKey($secKey);
         \Stripe\Stripe::setApiKey(env('STRIPE_SECRET_KEY'));
 
         $session = \Stripe\Checkout\Session::create([
@@ -104,6 +110,7 @@ class CartController extends Controller
             'cancel_url' => route('user.cart.cancel'),
         ]);
 
+        // $publicKey = $pubKey;
         $publicKey = env('STRIPE_PUBLIC_KEY');
 
         return view('user.checkout', compact('session', 'publicKey'));
@@ -112,6 +119,19 @@ class CartController extends Controller
 
     public function success()
     {
+        // メール送信
+        $user = User::findOrFail(Auth::id());
+        $items = Cart::where('user_id', Auth::id())->get();
+        $products = CartService::getItemsInCart($items);
+
+        SendThanksMail::dispatch($products, $user);
+        foreach($products as $product)
+        {
+            SendOrderedMail::dispatch($product, $user);
+        }
+        // dd($products, $user);
+        //////////
+
         Cart::where('user_id', Auth::id())->delete();
 
         return redirect()->route('user.items.index');
