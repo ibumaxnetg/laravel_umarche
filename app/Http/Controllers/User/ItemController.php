@@ -5,12 +5,15 @@ namespace App\Http\Controllers\User;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use App\Models\Product;
 use App\Models\Stock;
 use App\Models\PrimaryCategory;
+
+// メール送信用
+use Illuminate\Support\Facades\DB;
 use App\Mail\TestMail;
+use App\Jobs\SendThanksMail;
 
 class ItemController extends Controller
 {
@@ -71,9 +74,12 @@ class ItemController extends Controller
         // dd($stocks, $products);
         // $products = Product::all();
 
+/* 同期的に送信
         Mail::to('test@example.com') //受信者の指定
             ->send(new TestMail()); //Mailableクラス
-
+*/
+        // 非同期に送信
+        SendThanksMail::dispatch();
 
         return view('user.index', compact('products', 'categories'));
     }
